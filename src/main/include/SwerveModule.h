@@ -32,6 +32,10 @@ class SwerveModule {
 		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID);
 		frc::SwerveModuleState GetState() const;
 		frc::SwerveModulePosition GetPosition() const;
+		/**
+		 * Sets the desired state of a swerve module
+		 * @param swerveModuleState State of the swerve module.
+		*/
 		void SetDesiredState(const frc::SwerveModuleState& state);
 
 	private:

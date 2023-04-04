@@ -140,7 +140,7 @@ class Robot : public frc::TimedRobot {
 		frc::Encoder arm_encoder{7, 8};
 		frc::DigitalInput insideSwitch {0};
 		frc::DigitalInput armSwitch {1};
-
+		
 		Drivetrain m_swerve;
 
 		AHRS *ahrs;

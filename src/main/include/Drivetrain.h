@@ -31,7 +31,7 @@ class Drivetrain {
 		 * @param strafe Sideways movement of the robot in feet/sec.
 		 * @param rotate Rotational movement of the robot in degrees/sec
 		 * @param robotAngle Angle of the robot as a rotation2D.
-		 * @param fieldRelative Is the robot driving relative to the field?
+		 * @param fieldRelative Is the robot being driven field oriented?
 		 * 
 		*/
 		void Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, auto robotAngle, bool fieldRelative);
