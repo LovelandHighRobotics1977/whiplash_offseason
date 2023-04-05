@@ -18,6 +18,9 @@ void Drivetrain::Drive(units::feet_per_second_t forward, units::feet_per_second_
 	m_rearRight.SetDesiredState(rr);
 }
 
-void Drivetrain::UpdateOdometry() {m_odometry.Update(ahrs->GetRotation2d(), {m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
-																			  m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())});
+void Drivetrain::UpdateOdometry() {m_odometry.Update(ahrs->GetRotation2d(), 
+													{
+														m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
+														m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())
+													});
 }

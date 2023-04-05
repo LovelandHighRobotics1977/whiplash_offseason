@@ -28,13 +28,11 @@ void Robot::TeleopPeriodic() {
 	double j_strafe =  m_Joystick.GetX();
 	double j_rotate = -m_Joystick.GetTwist();
 
-	double throttle = m_Joystick.GetThrottle();
-	throttle += 1;
-	throttle = throttle/2;
+	double throttle = ((m_Joystick.GetThrottle() + 1) / 2);
 
-	const auto forward = -m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.02)) * Drivetrain::kMaxSpeed;
-	const auto strafe = -m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.02)) * Drivetrain::kMaxSpeed;
-	const auto rotate = -m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.02)) * Drivetrain::kMaxAngularSpeed;
+	const auto forward = (-m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.1)) * throttle) * Drivetrain::kMaxSpeed;
+	const auto strafe = (-m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.1)) * throttle) * Drivetrain::kMaxSpeed;
+	const auto rotate = (-m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.1)) * throttle) * Drivetrain::kMaxAngularSpeed;
 
 	m_swerve.Drive(forward,strafe,rotate,1);
 }

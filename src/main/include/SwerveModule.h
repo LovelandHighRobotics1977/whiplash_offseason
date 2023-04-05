@@ -46,12 +46,12 @@ class SwerveModule {
 		double drivekI = 0;
 		double drivekD = 0.005;
 		double drivekF = 1;
-		
+
 		double anglekP = 1.7;
 		double anglekI = 0.0016;
 		double anglekD = 160;
 		double anglekF = 0;
-		
+
 		WPI_TalonFX m_driveMotor;
 		WPI_TalonFX m_angleMotor;
 		CANCoder m_angleEncoder;

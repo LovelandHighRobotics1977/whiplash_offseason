@@ -72,9 +72,7 @@ class Robot : public frc::TimedRobot {
 				}else{
 					arm_angle.Set(0);
 				}
-			}
-
-			if(retract == true){
+			}else if(retract == true){
 				if(!armSwitch.Get()){
 					arm_extend.Set(1);
 				}else{
