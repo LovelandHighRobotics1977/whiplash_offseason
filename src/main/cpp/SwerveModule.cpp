@@ -7,8 +7,12 @@
 #include <numbers>
 
 #include <frc/geometry/Rotation2d.h>
-SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID)
+SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID, AHRS& navx)
 					  : m_driveMotor{driveMotorID}, m_angleMotor{angleMotorID}, m_angleEncoder{angleEncoderID} {
+
+	ahrs = &navx;
+  	ahrs->Reset();
+
 	//--------
 
 	m_driveMotor.SetNeutralMode(NeutralMode::Brake);
@@ -59,37 +63,24 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 		break;
 	}
 	m_angleEncoder.SetPositionToAbsolute();
-  // Set the distance per pulse for the drive encoder. We can simply use the
-  // distance traveled for one rotation of the wheel divided by the encoder
-  // resolution.
-  //m_driveEncoder.SetDistancePerPulse(2 * std::numbers::pi * kWheelRadius / kEncoderResolution);
-
-  // Set the distance (in this case, angle) per pulse for the angle encoder.
-  // This is the the angle through an entire rotation (2 * std::numbers::pi)
-  // divided by the encoder resolution.
-  //m_angleEncoder.SetDistancePerPulse(2 * std::numbers::pi / kEncoderResolution);
 }
-/*
-frc::SwerveModuleState SwerveModule::GetState() const {
-  return {units::meters_per_second_t{m_driveMotor.Get()}, units::degree_t{m_angleEncoder.GetPosition()}};
+frc::SwerveModulePosition SwerveModule::GetPosition(double distanceDrive) const{
+    return {units::meter_t{distanceDrive}, {ahrs->GetRotation2d()}};
 }
 
-frc::SwerveModulePosition SwerveModule::GetPosition() const {
-  return {units::meters_t{m_driveEncoder.GetDistance()}, units::degree_t{m_angleEncoder.GetDistance()}};
+double SwerveModule::getDrivePOS(){
+    return ((m_driveMotor.GetSelectedSensorPosition())*(5)); //sensor units multiplied by meters per sensor unit to get distance in meters
 }
-*/
+
 void SwerveModule::SetDesiredState(
 	const frc::SwerveModuleState& referenceState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
-		const auto state = frc::SwerveModuleState::Optimize(referenceState, units::degree_t{m_angleEncoder.GetPosition()});
+		const auto state = frc::SwerveModuleState::Optimize(referenceState, {ahrs->GetRotation2d()});
 
 		// Calculate the drive output
-		auto moduleSpeed = (units::feet_per_second_t(state.speed));
-		const auto driveOutput = units::feet_per_second_t(moduleSpeed.value()/kMaxDistancePerSec.value());
-		// Calculate the angle motor output
-		const auto turnOutput = state.angle.Degrees();
+		double angle = (((double) state.angle.Degrees())*(4096.0/ 360.0));
 
 		// Set the motor outputs.
-		m_driveMotor.Set(TalonFXControlMode::Velocity, driveOutput.value());
-		m_angleMotor.Set(TalonFXControlMode::Position, turnOutput.value());
+		m_driveMotor.Set((double) state.speed);
+		m_angleMotor.Set(TalonFXControlMode::Position, angle);
 }

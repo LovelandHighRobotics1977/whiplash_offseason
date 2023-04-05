@@ -6,15 +6,11 @@
 
 #include <numbers>
 
-#include "AHRS.h"
 #include <frc/geometry/Translation2d.h>
 #include <frc/kinematics/SwerveDriveKinematics.h>
 #include <frc/kinematics/SwerveDriveOdometry.h>
-#include <frc/kinematics/ChassisSpeeds.h>
 
 #include "SwerveModule.h"
-
-#include "Robot.h"
 
 /**
  * Represents a swerve drive style drivetrain.
@@ -22,8 +18,10 @@
  */
 class Drivetrain {
 	public:
-		AHRS *ahrs;
-		Drivetrain() { ahrs->Reset(); }
+		Drivetrain(AHRS& navx){
+        	ahrs = &navx;
+        	ahrs->Reset();
+    	}
 
 		/**
 		 * Drives the swerve robot
@@ -34,12 +32,12 @@ class Drivetrain {
 		 * @param fieldRelative Is the robot being driven field oriented?
 		 * 
 		*/
-		void Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, auto robotAngle, bool fieldRelative);
+		void Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative);
 		/**
 		 * Updates the swerve drive odometry
 		 * @param robotAngle the angle of the robot as a rotation2D
 		*/
-		void UpdateOdometry(auto robotAngle);
+		void UpdateOdometry();
 
 		static constexpr units::feet_per_second_t kMaxSpeed = 3.0_fps;  // 3 feet per second
 		static constexpr units::degrees_per_second_t kMaxAngularSpeed{180};  // 1/2 rotation per second
@@ -50,13 +48,15 @@ class Drivetrain {
 		frc::Translation2d m_rearLeftLocation{-0.3048_m, +0.3048_m};
 		frc::Translation2d m_rearRightLocation{-0.3048_m, -0.3048_m};
 
-		SwerveModule m_frontLeft{0, 1, 2};
-		SwerveModule m_frontRight{3, 4, 5};
-		SwerveModule m_rearLeft{6, 7, 8};
-		SwerveModule m_rearRight{9, 10, 11};
-  
+		SwerveModule m_frontLeft{0, 1, 2, *ahrs};
+		SwerveModule m_frontRight{3, 4, 5, *ahrs};
+		SwerveModule m_rearLeft{6, 7, 8, *ahrs};
+		SwerveModule m_rearRight{9, 10, 11, *ahrs};
+
+		AHRS *ahrs;
 
 		frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, m_frontRightLocation, m_rearLeftLocation, m_rearRightLocation};
 
-		frc::SwerveDriveOdometry<4> m_odometry{m_kinematics, ahrs->GetRotation2d(), {m_frontLeft.GetPosition(), m_frontRight.GetPosition(), m_rearLeft.GetPosition(), m_rearRight.GetPosition()}};
+		frc::SwerveDriveOdometry<4> m_odometry{m_kinematics, ahrs->GetRotation2d(), {m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
+																					 m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())}};
 };

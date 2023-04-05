@@ -10,24 +10,18 @@
 #include <thread>
 #include <math.h>
 
-#include <frc/MathUtil.h>
 #include <units/dimensionless.h>
-#include <units/length.h>
-#include <units/math.h>
 #include <units/time.h>
-#include <units/velocity.h>
 
 #include <ctre/Phoenix.h>
 #include "rev/CANSparkMax.h"
 
+#include <frc/MathUtil.h> //for frc::ApplyDeadband
 #include <frc/TimedRobot.h>
 #include <frc/XboxController.h>
 #include <frc/Joystick.h>
 #include <frc/Timer.h>
 #include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/DoubleSolenoid.h>
-#include <frc/Compressor.h>
-#include <frc/Solenoid.h>
 #include <frc/DigitalInput.h>
 #include <frc/Encoder.h>
 #include <frc/filter/SlewRateLimiter.h>
@@ -62,62 +56,60 @@ class Robot : public frc::TimedRobot {
 
 		//Controls the positioning of the mechanism arm
 		void GrabberArm(int out, int in, float down, float up, bool retract){
-		if(retract == false){
-		if((!armSwitch.Get())&&(out == 0)&&(in == 1)){
-			arm_extend.Set(1);
-		}
-		else if((out == 1)&&(in == 0)){
-			arm_extend.Set(-1);
-		}else {
-			arm_extend.Set(0);
-		}
+			if(retract == false){
+				if((!armSwitch.Get())&&(out == 0)&&(in == 1)){
+					arm_extend.Set(1);
+				}else if((out == 1)&&(in == 0)){
+					arm_extend.Set(-1);
+				}else {
+					arm_extend.Set(0);
+				}
 
-		if((down>0) && (up==0)){
-			arm_angle.Set(.3 * down);
-		}else if((up>0) && (down==0)&&(!insideSwitch.Get())){
-			arm_angle.Set(-.3 * up);
-		}else{
-			arm_angle.Set(0);
-		}
-		}
-
-		if(retract == true){
-			if(!armSwitch.Get()){
-				arm_extend.Set(1);
-			}else{
-				arm_extend.Set(0);
+				if((down>0) && (up==0)){
+					arm_angle.Set(.3 * down);
+				}else if((up>0) && (down==0)&&(!insideSwitch.Get())){
+					arm_angle.Set(-.3 * up);
+				}else{
+					arm_angle.Set(0);
+				}
 			}
 
-			if((!insideSwitch.Get())&&(armSwitch.Get())){
-				arm_angle.Set(-.2);
-			}else{
-				arm_angle.Set(0);
-			}
+			if(retract == true){
+				if(!armSwitch.Get()){
+					arm_extend.Set(1);
+				}else{
+					arm_extend.Set(0);
+				}
 
+				if((!insideSwitch.Get())&&(armSwitch.Get())){
+					arm_angle.Set(-.2);
+				}else{
+					arm_angle.Set(0);
+				}
+			}
 		}
-	}
 
 		//Automatically moves the arm up to the scoring position.
 		void AutoRaiseArm(int position, bool enabled){
-		if(!enabled){
-			positionSpeed = .3;
+			if(!enabled){
+				positionSpeed = .3;
+			}
+			if(enabled){
+				if(abs(arm_encoder.GetDistance()) < position-2){
+					arm_angle.Set(positionSpeed);
+				}else if(abs(arm_encoder.GetDistance()) > (position+2)){
+					arm_angle.Set(-positionSpeed);
+				}else if((abs(arm_encoder.GetDistance()) > (position-2))&&(abs(arm_encoder.GetDistance()) < (position+2))){
+					positionSpeed = .05;
+					arm_angle.Set(0);
+				}
+			}
 		}
-		if(enabled){
-		if(abs(arm_encoder.GetDistance()) < position-2){
-			arm_angle.Set(positionSpeed);
-		}else if(abs(arm_encoder.GetDistance()) > (position+2)){
-			arm_angle.Set(-positionSpeed);
-		}else if((abs(arm_encoder.GetDistance()) > (position-2))&&(abs(arm_encoder.GetDistance()) < (position+2))){
-			positionSpeed = .05;
-			arm_angle.Set(0);
-		}
-		}
-	}
 
 		//Controls the roller intakes to pick up or place game pieces
 		void Intake(int in, int out){
-		m_intake.Set(in-out);
-	}
+			m_intake.Set(in-out);
+		}
 
 	private:
 		frc::Joystick m_Joystick{0};
@@ -132,18 +124,14 @@ class Robot : public frc::TimedRobot {
 		WPI_TalonFX arm_angle{13};
 		WPI_TalonFX m_intake{15};
 
-		frc::DoubleSolenoid p_solenoidA{14, frc::PneumaticsModuleType::CTREPCM, 4, 5};
-		frc::Compressor p_compressor{14, frc::PneumaticsModuleType::CTREPCM};
-
 		frc::Timer timer;
 
 		frc::Encoder arm_encoder{7, 8};
 		frc::DigitalInput insideSwitch {0};
 		frc::DigitalInput armSwitch {1};
 		
-		Drivetrain m_swerve;
-
-		AHRS *ahrs;
+		AHRS ahrs{frc::SerialPort::Port::kUSB1};
+		Drivetrain m_swerve{ahrs};
 
 		double conversionFactor = 4096.0/ 360.0;
 

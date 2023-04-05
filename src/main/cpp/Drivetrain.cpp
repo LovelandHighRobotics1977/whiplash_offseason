@@ -4,20 +4,20 @@
 
 #include "Drivetrain.h"
 
-void Drivetrain::Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, auto robotAngle, bool fieldRelative) {
-	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(frc::ChassisSpeeds{forward, strafe, rotate}, robotAngle) 
+void Drivetrain::Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative) {
+	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(frc::ChassisSpeeds{forward, strafe, rotate}, ahrs->GetRotation2d()) 
 																  : frc::ChassisSpeeds{forward, strafe, rotate});
 
 	m_kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
-	auto [fl, fr, bl, br] = states;
+	auto [fl, fr, rl, rr] = states;
 
 	m_frontLeft.SetDesiredState(fl);
 	m_frontRight.SetDesiredState(fr);
-	m_rearLeft.SetDesiredState(bl);
-	m_rearRight.SetDesiredState(br);
+	m_rearLeft.SetDesiredState(rl);
+	m_rearRight.SetDesiredState(rr);
 }
 
-void Drivetrain::UpdateOdometry(auto robotAngle) {m_odometry.Update(robotAngle, {m_frontLeft.GetPosition(), m_frontRight.GetPosition(), 
-																				 m_rearLeft.GetPosition(),  m_rearRight.GetPosition()});
+void Drivetrain::UpdateOdometry() {m_odometry.Update(ahrs->GetRotation2d(), {m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
+																			  m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())});
 }
