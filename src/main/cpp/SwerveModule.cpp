@@ -49,21 +49,23 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 	//--------
 
 	switch (angleEncoderID){
-	case 2: //front left
+	case 2: //rear left
 		m_angleEncoder.ConfigMagnetOffset(105);
 		break;
-	case 5: //front right
+	case 5: //front left
 		m_angleEncoder.ConfigMagnetOffset(110);
 		break;
-	case 8: //rear left
+	case 8: //front right
 		m_angleEncoder.ConfigMagnetOffset(250);
 		break;
 	case 11: //rear right
 		m_angleEncoder.ConfigMagnetOffset(148);
 		break;
 	}
+	
 	m_angleEncoder.SetPositionToAbsolute();
 }
+
 frc::SwerveModulePosition SwerveModule::GetPosition(double distanceDrive) const{
     return {units::meter_t{distanceDrive}, {ahrs->GetRotation2d()}};
 }

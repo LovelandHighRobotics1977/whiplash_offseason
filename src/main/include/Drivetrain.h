@@ -40,7 +40,7 @@ class Drivetrain {
 		*/
 		void UpdateOdometry();
 
-		static constexpr units::feet_per_second_t kMaxSpeed = 3.0_fps;  // 3 feet per second
+		static constexpr units::meters_per_second_t kMaxSpeed = 3.0_mps;  // 3 meters per second
 		static constexpr units::degrees_per_second_t kMaxAngularSpeed{180};  // 1/2 rotation per second
 
 	private:
