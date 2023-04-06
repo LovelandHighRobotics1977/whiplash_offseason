@@ -4,37 +4,7 @@
 
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <chrono>
-#include <thread>
-#include <math.h>
-
-#include <units/dimensionless.h>
-#include <units/time.h>
-
-#include <ctre/Phoenix.h>
-#include "rev/CANSparkMax.h"
-
-#include <frc/MathUtil.h> //for frc::ApplyDeadband
-#include <frc/TimedRobot.h>
-#include <frc/XboxController.h>
-#include <frc/Joystick.h>
-#include <frc/Timer.h>
-#include <frc/smartdashboard/SmartDashboard.h>
-#include <frc/DigitalInput.h>
-#include <frc/Encoder.h>
-#include <frc/filter/SlewRateLimiter.h>
-
 #include "Drivetrain.h"
-
-#include <cameraserver/CameraServer.h>
-#include "networktables/NetworkTable.h"
-#include "networktables/NetworkTableInstance.h"
-#include "networktables/NetworkTableEntry.h"
-#include "networktables/NetworkTableValue.h"
-
-#include "AHRS.h"
 
 class Robot : public frc::TimedRobot {
 	public:

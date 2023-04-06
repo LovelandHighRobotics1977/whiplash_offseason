@@ -4,9 +4,6 @@
 
 #include "SwerveModule.h"
 
-#include <numbers>
-
-#include <frc/geometry/Rotation2d.h>
 SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID, AHRS& navx)
 					  : m_driveMotor{driveMotorID}, m_angleMotor{angleMotorID}, m_angleEncoder{angleEncoderID} {
 
@@ -63,6 +60,8 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 		break;
 	}
 	
+	CANID = angleEncoderID;
+
 	m_angleEncoder.SetPositionToAbsolute();
 }
 
@@ -77,12 +76,16 @@ double SwerveModule::getDrivePOS(){
 void SwerveModule::SetDesiredState(
 	const frc::SwerveModuleState& referenceState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
-		const auto state = frc::SwerveModuleState::Optimize(referenceState, {ahrs->GetRotation2d()});
+		const auto state = frc::SwerveModuleState::Optimize(referenceState, units::degree_t{m_angleEncoder.GetPosition()});
 
 		// Calculate the drive output
 		double angle = (((double) state.angle.Degrees())*(4096.0/ 360.0));
 
+		if(CANID == 5){
+			std::cout<<"Angle: "<<angle<<"\n"<<"Speed:"<<((double) state.speed)<<"\n"<<std::endl;
+		}
+
 		// Set the motor outputs.
-		m_driveMotor.Set((double) state.speed);
-		m_angleMotor.Set(TalonFXControlMode::Position, angle);
+		//m_driveMotor.Set((double) state.speed);
+		//m_angleMotor.Set(TalonFXControlMode::Position, angle);
 }

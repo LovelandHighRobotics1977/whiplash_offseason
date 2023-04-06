@@ -4,20 +4,7 @@
 
 #pragma once
 
-#include <numbers>
-
-#include <frc/kinematics/SwerveModulePosition.h>
-#include <frc/kinematics/SwerveModuleState.h>
-
-#include <units/angular_velocity.h>
-#include <units/time.h>
-#include <units/velocity.h>
-#include "units/length.h"
-#include "units/angle.h"
-
-#include <ctre/Phoenix.h>
-
-#include "AHRS.h"
+#include "Headers.h"
 
 /**
  * Represents a single swerve module in a swerve drivetrain
@@ -55,5 +42,8 @@ class SwerveModule {
 		WPI_TalonFX m_driveMotor;
 		WPI_TalonFX m_angleMotor;
 		CANCoder m_angleEncoder;
+
+		int CANID;
+
 		AHRS *ahrs;
 };

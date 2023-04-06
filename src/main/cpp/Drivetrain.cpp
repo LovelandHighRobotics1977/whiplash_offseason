@@ -4,7 +4,7 @@
 
 #include "Drivetrain.h"
 
-void Drivetrain::Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative) {
+void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative) {
 	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(frc::ChassisSpeeds{forward, strafe, rotate}, ahrs->GetRotation2d()) 
 																  : frc::ChassisSpeeds{forward, strafe, rotate});
 

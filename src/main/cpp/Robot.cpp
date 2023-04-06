@@ -32,7 +32,7 @@ void Robot::TeleopPeriodic() {
 
 	const auto forward = (-m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.1)) * throttle) * Drivetrain::kMaxSpeed;
 	const auto strafe = (-m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.1)) * throttle) * Drivetrain::kMaxSpeed;
-	const auto rotate = (-m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.1)) * throttle) * Drivetrain::kMaxAngularSpeed;
+	const auto rotate = (-m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.1)) * throttle) * units::degrees_per_second_t{180};
 
 	m_swerve.Drive(forward,strafe,rotate,1);
 }

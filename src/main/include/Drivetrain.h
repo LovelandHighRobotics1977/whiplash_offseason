@@ -4,12 +4,6 @@
 
 #pragma once
 
-#include <numbers>
-
-#include <frc/geometry/Translation2d.h>
-#include <frc/kinematics/SwerveDriveKinematics.h>
-#include <frc/kinematics/SwerveDriveOdometry.h>
-
 #include "SwerveModule.h"
 
 /**
@@ -25,23 +19,23 @@ class Drivetrain {
 
 		/**
 		 * Drives the swerve robot
-		 * @param forward Forward movement of the robot in feet/sec.
-		 * @param strafe Sideways movement of the robot in feet/sec.
+		 * @param forward Forward movement of the robot in meters/sec.
+		 * @param strafe Sideways movement of the robot in meters/sec.
 		 * @param rotate Rotational movement of the robot in degrees/sec
 		 * @param robotAngle Angle of the robot as a rotation2D.
 		 * @param fieldRelative Is the robot being driven field oriented?
 		 * 
 		*/
-		void Drive(units::feet_per_second_t forward, units::feet_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative);
+		void Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative);
 		/**
 		 * Updates the swerve drive odometry
 		 * @param robotAngle the angle of the robot as a rotation2D
 		 * @return returns a pose2d of the robot's position on the field.
 		*/
 		void UpdateOdometry();
-
-		static constexpr units::meters_per_second_t kMaxSpeed = 3.0_mps;  // 3 meters per second
-		static constexpr units::degrees_per_second_t kMaxAngularSpeed{180};  // 1/2 rotation per second
+		
+		static constexpr units::meters_per_second_t kMaxSpeed = 1.0_mps;  // 3 meters per second
+		
 
 	private:
 		/*
