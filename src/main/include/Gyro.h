@@ -10,16 +10,15 @@ class Gyro {
 		~Gyro() = default;
 	
 	public:
-		Gyro(const Gyro&) = delete;
-		Gyro& operator=(const Gyro&) = delete;
+	Gyro(const Gyro&) = delete;
+	Gyro& operator=(const Gyro&) = delete;
 
-		static Gyro* GetInstance(){
-			if ( !instance ){
-				instance = new Gyro();
-			}
-			return instance;
-			}
-
+	static Gyro* GetInstance(){
+		if ( !instance ){
+			instance = new Gyro();
+		}
+		return instance;
+	}
 
 	AHRS ahrs{frc::SerialPort::Port::kUSB1};
 

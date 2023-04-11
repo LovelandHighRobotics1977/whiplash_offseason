@@ -53,23 +53,30 @@ frc::SwerveModulePosition SwerveModule::GetPosition(double distanceDrive) const{
     return {units::meter_t{distanceDrive},gyro->GetRotation2d()};
 }
 
+units::degree_t SwerveModule::getAngle() { return units::degree_t{m_angleEncoder.GetPosition()};}
+
 double SwerveModule::getDrivePOS(){
     return ((m_driveMotor.GetSelectedSensorPosition())*(5)); //sensor units multiplied by meters per sensor unit to get distance in meters
 }
 
+frc::SwerveModuleState SwerveModule::Optimize(
+  const frc::SwerveModuleState& desiredState, const frc::Rotation2d& currentAngle) {
+  auto delta = desiredState.angle - currentAngle;
+  if (units::math::abs(delta.Degrees()) > 90_deg) {
+    return {-desiredState.speed, desiredState.angle + frc::Rotation2d{180_deg}};
+  } else {
+    return {desiredState.speed, desiredState.angle};
+  }
+}
+
 void SwerveModule::SetDesiredState(
-	const frc::SwerveModuleState& referenceState) {
+	const frc::SwerveModuleState& desiredState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
-		const auto state = frc::SwerveModuleState::Optimize(referenceState, units::degree_t{m_angleEncoder.GetPosition()});
-
-		// Calculate the drive output
-		double angle = (((double) state.angle.Degrees())*(4096.0/ 360.0));
-
-		if(CANID == 5){
-			std::cout<<"Angle: "<<angle<<"\n"<<"Speed:"<<((double) state.speed)<<"\n"<<std::endl;
-		}
+		
+		frc::Rotation2d const current_rotation = getAngle();
+		auto const [optimized_speed, optimized_angle] = frc::SwerveModuleState::Optimize(desiredState, current_rotation);
 
 		// Set the motor outputs.
-		//m_driveMotor.Set((double) state.speed);
-		//m_angleMotor.Set(TalonFXControlMode::Position, angle);
+		m_driveMotor.Set((double) optimized_speed);
+		m_angleMotor.Set(TalonFXControlMode::Position, optimized_angle.Degrees().value()*(4096.0 / 360.0));
 }

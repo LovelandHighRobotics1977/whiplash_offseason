@@ -9,8 +9,6 @@ void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_sec
 													frc::ChassisSpeeds{forward, strafe, rotate}, gyro->GetRotation2d()) 
 												  : frc::ChassisSpeeds{forward, strafe, rotate});
 
-	
-
 	m_kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
 	auto [fl, fr, rl, rr] = states;

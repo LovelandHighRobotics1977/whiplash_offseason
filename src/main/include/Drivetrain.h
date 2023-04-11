@@ -22,7 +22,6 @@ class Drivetrain {
 		 * @param forward Forward movement of the robot in meters/sec.
 		 * @param strafe Sideways movement of the robot in meters/sec.
 		 * @param rotate Rotational movement of the robot in degrees/sec
-		 * @param robotAngle Angle of the robot as a rotation2D.
 		 * @param fieldRelative Is the robot being driven field oriented?
 		 * 
 		*/
@@ -74,5 +73,5 @@ class Drivetrain {
 											   		m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
 													m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())
 												},
-												frc::Pose2d{5_m,5_m,0_deg}};
+												frc::Pose2d{0_m,0_m,0_deg}};
 };
