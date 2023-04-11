@@ -11,15 +11,15 @@
 */
 class SwerveModule {
 	public:
+		
 		/**
 			* Takes 3 CAN IDs and a gyroscope instance and constructs a SwerveModule object
 			*
 			* @param driveMotorID Drive motor CAN ID.
 			* @param angleMotorID Angle motor CAN ID.
 			* @param driveEncoderID Angle encoder CAN ID.
-			* @param AHRS AHRS navx gyroscope.
 		*/
-		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID, AHRS& navx);
+		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID);
 		frc::SwerveModulePosition GetPosition(double distanceDrive) const;
 		double getDrivePOS();
 		/**
@@ -39,11 +39,11 @@ class SwerveModule {
 		double anglekD = 160;
 		double anglekF = 0;
 
+		Gyro* gyro = Gyro::GetInstance();
+
 		WPI_TalonFX m_driveMotor;
 		WPI_TalonFX m_angleMotor;
 		CANCoder m_angleEncoder;
 
 		int CANID;
-
-		AHRS *ahrs;
 };

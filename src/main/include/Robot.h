@@ -97,9 +97,8 @@ class Robot : public frc::TimedRobot {
 		frc::Encoder arm_encoder{7, 8};
 		frc::DigitalInput insideSwitch {0};
 		frc::DigitalInput armSwitch {1};
-		
-		AHRS ahrs{frc::SerialPort::Port::kUSB1};
-		Drivetrain m_swerve{ahrs};
+
+		Drivetrain m_swerve{};
 
 		double conversionFactor = 4096.0/ 360.0;
 

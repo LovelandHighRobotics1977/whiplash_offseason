@@ -5,8 +5,11 @@
 #include "Drivetrain.h"
 
 void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative) {
-	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(frc::ChassisSpeeds{forward, strafe, rotate}, ahrs->GetRotation2d()) 
-																  : frc::ChassisSpeeds{forward, strafe, rotate});
+	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
+													frc::ChassisSpeeds{forward, strafe, rotate}, gyro->GetRotation2d()) 
+												  : frc::ChassisSpeeds{forward, strafe, rotate});
+
+	
 
 	m_kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
@@ -18,7 +21,7 @@ void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_sec
 	m_rearRight.SetDesiredState(rr);
 }
 
-void Drivetrain::UpdateOdometry() {m_odometry.Update(ahrs->GetRotation2d(), 
+void Drivetrain::UpdateOdometry() {m_odometry.Update(gyro->GetRotation2d(), 
 													{
 														m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
 														m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())

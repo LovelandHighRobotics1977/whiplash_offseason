@@ -16,8 +16,6 @@
 #include <units/angle.h>
 #include <units/dimensionless.h>
 
-#include "AHRS.h"
-
 #include <ctre/Phoenix.h>
 #include "rev/CANSparkMax.h"
 
@@ -30,5 +28,8 @@
 #include <frc/DigitalInput.h>
 #include <frc/Encoder.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/SerialPort.h>
 
 #include <cameraserver/CameraServer.h>
+
+#include "Gyro.h"

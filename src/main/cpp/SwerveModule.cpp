@@ -4,11 +4,8 @@
 
 #include "SwerveModule.h"
 
-SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID, AHRS& navx)
+SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID)
 					  : m_driveMotor{driveMotorID}, m_angleMotor{angleMotorID}, m_angleEncoder{angleEncoderID} {
-
-	ahrs = &navx;
-  	ahrs->Reset();
 
 	//--------
 
@@ -66,7 +63,7 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 }
 
 frc::SwerveModulePosition SwerveModule::GetPosition(double distanceDrive) const{
-    return {units::meter_t{distanceDrive}, {ahrs->GetRotation2d()}};
+    return {units::meter_t{distanceDrive},gyro->GetRotation2d()};
 }
 
 double SwerveModule::getDrivePOS(){

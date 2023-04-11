@@ -6,7 +6,7 @@
 
 void Robot::RobotInit() {
 	frc::CameraServer::StartAutomaticCapture();
-
+	
 	arm_angle.SetNeutralMode(NeutralMode::Brake);
 	arm_extend.SetIdleMode(rev::CANSparkMax::IdleMode::kBrake);
 }
