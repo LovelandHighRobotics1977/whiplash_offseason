@@ -13,13 +13,14 @@ class SwerveModule {
 	public:
 		
 		/**
-			* Takes 3 CAN IDs and a gyroscope instance and constructs a SwerveModule object
+			* Takes 3 CAN IDs and a magnet offset and constructs a SwerveModule object
 			*
 			* @param driveMotorID Drive motor CAN ID.
 			* @param angleMotorID Angle motor CAN ID.
 			* @param driveEncoderID Angle encoder CAN ID.
+			* @param magnetOffset Magnet offset of the module's cancoder.
 		*/
-		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID);
+		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID, double magnetOffset);
 		frc::SwerveModulePosition GetPosition(double distanceDrive) const;
 		double getDrivePOS();
 		/**

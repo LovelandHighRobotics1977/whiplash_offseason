@@ -54,16 +54,16 @@ class Drivetrain {
 		1st on CAN							Last on CAN
 		*/
 
-		SwerveModule m_rearLeft{0, 1, 2};
+					  SwerveModule m_rearLeft{0, 1, 2, 105};
 		frc::Translation2d m_rearLeftLocation{-0.3048_m, +0.3048_m};
 
-		SwerveModule m_frontLeft{3, 4, 5};
+					  SwerveModule m_frontLeft{3, 4, 5, 110};
 		frc::Translation2d m_frontLeftLocation{+0.3048_m, +0.3048_m};
 
-		SwerveModule m_frontRight{6, 7, 8};
+					  SwerveModule m_frontRight{6, 7, 8, 250};
 		frc::Translation2d m_frontRightLocation{+0.3048_m, -0.3048_m};
 
-		SwerveModule m_rearRight{9, 10, 11};
+					  SwerveModule m_rearRight{9, 10, 11, 148};
 		frc::Translation2d m_rearRightLocation{-0.3048_m, -0.3048_m};
 
 		frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, m_frontRightLocation, m_rearLeftLocation, m_rearRightLocation};

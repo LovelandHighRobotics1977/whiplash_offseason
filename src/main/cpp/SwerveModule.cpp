@@ -4,7 +4,7 @@
 
 #include "SwerveModule.h"
 
-SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID)
+SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,       const int angleEncoderID, double magnetOffset)
 					  : m_driveMotor{driveMotorID}, m_angleMotor{angleMotorID}, m_angleEncoder{angleEncoderID} {
 
 	//--------
@@ -42,20 +42,7 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 
 	//--------
 
-	switch (angleEncoderID){
-	case 2: //rear left
-		m_angleEncoder.ConfigMagnetOffset(105);
-		break;
-	case 5: //front left
-		m_angleEncoder.ConfigMagnetOffset(110);
-		break;
-	case 8: //front right
-		m_angleEncoder.ConfigMagnetOffset(250);
-		break;
-	case 11: //rear right
-		m_angleEncoder.ConfigMagnetOffset(148);
-		break;
-	}
+	m_angleEncoder.ConfigMagnetOffset(magnetOffset);
 	
 	CANID = angleEncoderID;
 
