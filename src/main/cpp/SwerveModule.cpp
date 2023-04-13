@@ -74,7 +74,7 @@ void SwerveModule::SetDesiredState(
 		// Optimize the reference state to avoid spinning further than 90 degrees
 		
 		frc::Rotation2d const current_rotation = getAngle();
-		auto const [optimized_speed, optimized_angle] = frc::SwerveModuleState::Optimize(desiredState, current_rotation);
+		auto const [optimized_speed, optimized_angle] = SwerveModule::Optimize(desiredState, current_rotation);
 
 		// Set the motor outputs.
 		m_driveMotor.Set((double) optimized_speed);

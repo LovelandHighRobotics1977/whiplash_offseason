@@ -1,7 +1,9 @@
-#pragma once
+#ifndef HEADERS_H
+#define HEADERS_H
 
 //c++
 #include <iostream>
+#include <math.h>
 
 //frc kinematics
 #include <frc/geometry/Rotation2d.h>
@@ -30,6 +32,7 @@
 #include <frc/XboxController.h>
 #include <frc/Joystick.h>
 #include <frc/filter/SlewRateLimiter.h>
+#include <frc/GenericHID.h>
 
 //frc misc
 #include <frc/TimedRobot.h>
@@ -41,3 +44,5 @@
 
 //user defined
 #include "Gyro.h"
+
+#endif /* !HEADERS_H */
