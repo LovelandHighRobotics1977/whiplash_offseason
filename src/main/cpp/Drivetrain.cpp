@@ -11,12 +11,12 @@ void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_sec
 
 	m_kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
-	auto [fl, fr, rl, rr] = states;
+	auto [rr, fr, fl, rl] = states;
 
 	m_frontLeft.SetDesiredState(fl);
 	m_frontRight.SetDesiredState(fr);
-	m_rearLeft.SetDesiredState(rl);
 	m_rearRight.SetDesiredState(rr);
+	m_rearLeft.SetDesiredState(rl);
 }
 
 void Drivetrain::UpdateOdometry() {m_odometry.Update(gyro->GetRotation2d(), 

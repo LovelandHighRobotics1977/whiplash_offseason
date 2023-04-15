@@ -27,7 +27,7 @@ class SwerveModule {
 		*/
 		SwerveModule(int driveMotorID, int angleMotorID, int angleEncoderID, double magnetOffset);
 
-		units::degree_t getAngle();
+		frc::Rotation2d getAngle();
 
 		frc::SwerveModulePosition GetPosition(double distanceDrive) const;
 		double getDrivePOS();

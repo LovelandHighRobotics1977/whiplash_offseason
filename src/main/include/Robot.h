@@ -9,7 +9,6 @@
 
 class Robot : public frc::TimedRobot {
 	public:
-
 		void RobotInit() override;
 		void RobotPeriodic() override;
 
@@ -39,10 +38,4 @@ class Robot : public frc::TimedRobot {
 		Drivetrain m_swerve{};
 
 		Arm m_arm{};
-
-		double conversionFactor = 4096.0/ 360.0;
-
-		double yaw;
-
-		int resetTimer = 0;
 	};

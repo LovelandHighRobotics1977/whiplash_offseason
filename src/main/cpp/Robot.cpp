@@ -6,22 +6,23 @@
 
 void Robot::RobotInit() {
 	frc::CameraServer::StartAutomaticCapture();
-	m_Controller.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
+	frc::SmartDashboard::PutNumber("angle",0);
+	frc::SmartDashboard::PutNumber("vx",0);
+	frc::SmartDashboard::PutNumber("vy",0);
 }
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
-
 }
 void Robot::AutonomousPeriodic() {
-
+	auto angle = units::degrees_per_second_t{frc::SmartDashboard::GetNumber("angle",0)};
+	auto vx = units::meters_per_second_t{-frc::SmartDashboard::GetNumber("vx",0)};
+	auto vy = units::meters_per_second_t{frc::SmartDashboard::GetNumber("vy",0)};
+	m_swerve.Drive(vx,vy,angle,0);
 }
 
-void Robot::TeleopInit() {
-	m_Controller.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 1);
-}
+void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-	m_Controller.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
 	double j_forward = m_Joystick.GetY();
 	double j_strafe = -m_Joystick.GetX();
 	double j_rotate = -m_Joystick.GetTwist();
@@ -48,15 +49,13 @@ void Robot::TeleopPeriodic() {
 	m_arm.AutoPosition(220,c_direction,c_enabled);
 }
 
-void Robot::DisabledInit() {
-	m_Controller.SetRumble(frc::GenericHID::RumbleType::kBothRumble, 0);
-}
+void Robot::DisabledInit() {}
 void Robot::DisabledPeriodic() {}
 
 void Robot::TestInit() {}
 void Robot::TestPeriodic() {}
 
-#ifndef RUNNING_FRC_TESTS
+#ifndef RUNNING_FRc_TESTS
 int main() {
 	return frc::StartRobot<Robot>();
 }

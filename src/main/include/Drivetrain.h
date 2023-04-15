@@ -65,7 +65,8 @@ class Drivetrain {
 					  SwerveModule m_rearRight{9, 10, 11, 148};
 		frc::Translation2d m_rearRightLocation{-0.3048_m, -0.3048_m};
 
-		frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, m_frontRightLocation, m_rearLeftLocation, m_rearRightLocation};
+		frc::SwerveDriveKinematics<4> m_kinematics{m_rearLeftLocation, m_frontLeftLocation, m_frontRightLocation, m_rearRightLocation};
+		//frc::SwerveDriveKinematics<4> m_kinematics{m_frontLeftLocation, m_frontRightLocation, m_rearLeftLocation, m_rearRightLocation};
 
 		frc::SwerveDriveOdometry<4> m_odometry{m_kinematics, 
 												gyro->GetRotation2d(),
