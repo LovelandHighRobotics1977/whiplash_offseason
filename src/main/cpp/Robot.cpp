@@ -6,19 +6,19 @@
 
 void Robot::RobotInit() {
 	frc::CameraServer::StartAutomaticCapture();
-	frc::SmartDashboard::PutNumber("angle",0);
-	frc::SmartDashboard::PutNumber("vx",0);
-	frc::SmartDashboard::PutNumber("vy",0);
+	frc::SmartDashboard::PutNumber("vD:",0);
+	frc::SmartDashboard::PutNumber("vX:",0);
+	frc::SmartDashboard::PutNumber("vY:",0);
 }
 void Robot::RobotPeriodic() {}
 
 void Robot::AutonomousInit() {
 }
 void Robot::AutonomousPeriodic() {
-	auto angle = units::degrees_per_second_t{frc::SmartDashboard::GetNumber("angle",0)};
-	auto vx = units::meters_per_second_t{-frc::SmartDashboard::GetNumber("vx",0)};
-	auto vy = units::meters_per_second_t{frc::SmartDashboard::GetNumber("vy",0)};
-	m_swerve.Drive(vx,vy,angle,0);
+	auto angle = units::degrees_per_second_t{frc::SmartDashboard::GetNumber("vD:",0)};
+	auto vx = units::meters_per_second_t{-frc::SmartDashboard::GetNumber("vX:",0)};
+	auto vy = units::meters_per_second_t{frc::SmartDashboard::GetNumber("vY:",0)};
+	m_swerve.Drive(-vx,-vy,angle,0);
 }
 
 void Robot::TeleopInit() {}

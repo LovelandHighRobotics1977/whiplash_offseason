@@ -81,10 +81,8 @@ frc::SwerveModuleState SwerveModule::Optimize(const frc::SwerveModuleState& desi
 void SwerveModule::SetDesiredState(
 	const frc::SwerveModuleState& desiredState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
-		
-		auto speed = desiredState.speed;
-		auto angle = desiredState.angle;
-		auto const [optimized_speed, optimized_angle] = SwerveModule::Optimize(desiredState, getAngle());
+
+		auto const [optimized_speed, optimized_angle] = frc::SwerveModuleState::Optimize(desiredState, getAngle());
 
 		if(CANID==2){
 			frc::SmartDashboard::PutNumber("Rear Left angle", optimized_angle.Degrees().value());
@@ -104,6 +102,6 @@ void SwerveModule::SetDesiredState(
   		}
 
 		// Set the motor outputs.
-		m_driveMotor.Set((double) speed);
-		m_angleMotor.Set(TalonFXControlMode::Position, angle.Degrees().value()*(4096.0 / 360.0));
+		m_driveMotor.Set((double) optimized_speed);
+		m_angleMotor.Set(TalonFXControlMode::Position, optimized_angle.Degrees().value()*(4096.0 / 360.0));
 }
