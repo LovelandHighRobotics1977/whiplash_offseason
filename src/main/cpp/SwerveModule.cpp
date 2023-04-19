@@ -49,59 +49,39 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 	m_angleEncoder.SetPositionToAbsolute();
 }
 
-frc::SwerveModulePosition SwerveModule::GetPosition(double distanceDrive) const{
-    return {units::meter_t{distanceDrive},gyro->GetRotation2d()};
-}
+frc::SwerveModulePosition SwerveModule::GetPosition() {return {units::meter_t{(m_driveMotor.GetSelectedSensorPosition())*(/*  2048 * meters/sensor unit  */5)}, gyro->GetRotation2d()};}
 
-frc::Rotation2d SwerveModule::getAngle() { 
-	auto temp1 = m_angleEncoder.GetAbsolutePosition();
-	auto temp2 = units::degree_t{temp1};
-	auto temp3 = frc::Rotation2d{temp2};
-	return temp3;
-}
-
-double SwerveModule::getDrivePOS(){
-    return ((m_driveMotor.GetSelectedSensorPosition())*(5)); //sensor units multiplied by meters per sensor unit to get distance in meters
-}
-
-frc::SwerveModuleState SwerveModule::Optimize(const frc::SwerveModuleState& desiredState, const frc::Rotation2d& currentAngle) {
-  auto delta = desiredState.angle - currentAngle;
-
-	if(abs(delta.Degrees().value()) < 2){
-		delta = 0_deg;
-	}
-  
-  if (units::math::abs(delta.Degrees()) > 90_deg) {
-    return {-desiredState.speed, desiredState.angle + frc::Rotation2d{180_deg}};
-  } else {
-    return {desiredState.speed, desiredState.angle};
-  }
-}
+frc::Rotation2d SwerveModule::getAngle() {return frc::Rotation2d{units::degree_t{-m_angleEncoder.GetPosition()}}; }
 
 void SwerveModule::SetDesiredState(
 	const frc::SwerveModuleState& desiredState) {
 		// Optimize the reference state to avoid spinning further than 90 degrees
 
 		auto const [optimized_speed, optimized_angle] = frc::SwerveModuleState::Optimize(desiredState, getAngle());
+		//auto const [optimized_speed_test, optimized_angle_test] = frc::SwerveModuleState::Optimize(desiredState, frc::Rotation2d{units::degree_t{angle}});
+		//auto un_optimized_speed = desiredState.speed;auto un_optimized_angle = desiredState.angle;
 
-		if(CANID==2){
+		switch (CANID){
+		case 2:
 			frc::SmartDashboard::PutNumber("Rear Left angle", optimized_angle.Degrees().value());
 			frc::SmartDashboard::PutNumber("Rear Left speed", optimized_speed.value());
-  		}
-		if(CANID==5){
+			break;
+		case 5:
 			frc::SmartDashboard::PutNumber("Front Left angle", optimized_angle.Degrees().value());
 			frc::SmartDashboard::PutNumber("Front Left speed", optimized_speed.value());
-  		}
-		if(CANID==8){
+			break;
+		case 8:
 			frc::SmartDashboard::PutNumber("Front Right angle", optimized_angle.Degrees().value());
 			frc::SmartDashboard::PutNumber("Front Right speed", optimized_speed.value());
-  		}
-		if(CANID==11){
+			break;
+		case 11:
 			frc::SmartDashboard::PutNumber("Rear Right angle", optimized_angle.Degrees().value());
 			frc::SmartDashboard::PutNumber("Rear Right speed", optimized_speed.value());
-  		}
+			break;
+		}
 
 		// Set the motor outputs.
 		m_driveMotor.Set((double) optimized_speed);
 		m_angleMotor.Set(TalonFXControlMode::Position, optimized_angle.Degrees().value()*(4096.0 / 360.0));
+		angle = optimized_angle;
 }

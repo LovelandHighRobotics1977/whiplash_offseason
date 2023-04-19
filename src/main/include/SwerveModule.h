@@ -29,16 +29,9 @@ class SwerveModule {
 
 		frc::Rotation2d getAngle();
 
-		frc::SwerveModulePosition GetPosition(double distanceDrive) const;
-		double getDrivePOS();
+		frc::SwerveModulePosition GetPosition();
 
-		/**
-		 * Sets the desired state of a swerve module
-		 * @param swerveModuleState State of the swerve module.
-		*/
 		void SetDesiredState(const frc::SwerveModuleState& state);
-
-		frc::SwerveModuleState Optimize(const frc::SwerveModuleState& state, const frc::Rotation2d& currentAngle);
 
 	private:
 		double drivekP = 0.001;
@@ -58,4 +51,6 @@ class SwerveModule {
 		CANCoder m_angleEncoder;
 
 		int CANID;
+
+		frc::Rotation2d angle = units::degree_t{0};
 };

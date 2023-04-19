@@ -28,7 +28,7 @@ class Gyro {
 	 * the current heading of the robot as a Rotation2d. This heading is based on integration of the returned rate from the gyro.
 	*/
 	frc::Rotation2d GetRotation2d(){
-		return ahrs.GetRotation2d();
+		return frc::Rotation2d{units::degree_t{ahrs.GetYaw()}};
 	}
 
 	/**
@@ -56,6 +56,10 @@ class Gyro {
 	*/
 	void ZeroYaw(){
 		ahrs.ZeroYaw();
+	}
+
+	double GetYaw(){
+		return ahrs.GetYaw();
 	}
 };
 

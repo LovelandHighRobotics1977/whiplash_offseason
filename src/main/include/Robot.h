@@ -35,7 +35,12 @@ class Robot : public frc::TimedRobot {
 
 		frc::Timer timer;
 
+		Gyro* gyro = Gyro::GetInstance();
+
 		Drivetrain m_swerve{};
 
 		Arm m_arm{};
+
+		frc::Translation2d centerOfRotation = {0_m,0_m};
+		units::angular_velocity::degrees_per_second_t rotation = 0_deg_per_s;
 	};

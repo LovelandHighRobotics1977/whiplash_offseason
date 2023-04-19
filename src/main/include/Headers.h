@@ -4,6 +4,7 @@
 //c++
 #include <iostream>
 #include <math.h>
+#include <cmath>
 
 //frc kinematics
 #include <frc/geometry/Rotation2d.h>

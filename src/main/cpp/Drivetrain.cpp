@@ -4,24 +4,26 @@
 
 #include "Drivetrain.h"
 
-void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative) {
+void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative, frc::Translation2d centerOfRotation) {
 	auto states = m_kinematics.ToSwerveModuleStates(fieldRelative ? frc::ChassisSpeeds::FromFieldRelativeSpeeds(
 													frc::ChassisSpeeds{forward, strafe, rotate}, gyro->GetRotation2d()) 
-												  : frc::ChassisSpeeds{forward, strafe, rotate});
+												  : frc::ChassisSpeeds{forward, strafe, rotate},
+												  centerOfRotation);
 
 	m_kinematics.DesaturateWheelSpeeds(&states, kMaxSpeed);
 
-	auto [rr, fr, fl, rl] = states;
+	auto [rl, fl, fr, rr] = states;
 
+	m_rearLeft.SetDesiredState(rl);
 	m_frontLeft.SetDesiredState(fl);
 	m_frontRight.SetDesiredState(fr);
 	m_rearRight.SetDesiredState(rr);
-	m_rearLeft.SetDesiredState(rl);
+	
 }
 
 void Drivetrain::UpdateOdometry() {m_odometry.Update(gyro->GetRotation2d(), 
 													{
-														m_frontLeft.GetPosition(m_frontLeft.getDrivePOS()), m_frontRight.GetPosition(m_frontRight.getDrivePOS()), 
-														m_rearLeft.GetPosition(m_rearLeft.getDrivePOS()),  m_rearRight.GetPosition(m_rearRight.getDrivePOS())
+														m_rearLeft.GetPosition(), m_frontLeft.GetPosition(), 
+														m_frontRight.GetPosition(), m_rearRight.GetPosition()
 													});
 }
