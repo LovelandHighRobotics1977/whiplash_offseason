@@ -34,6 +34,14 @@ class SwerveModule {
 		void SetDesiredState(const frc::SwerveModuleState& state);
 
 	private:
+		Gyro* gyro = Gyro::GetInstance();
+
+		WPI_TalonFX m_driveMotor;
+		WPI_TalonFX m_angleMotor;
+		CANCoder m_angleEncoder;
+
+		int CANID;
+
 		double drivekP = 0.001;
 		double drivekI = 0;
 		double drivekD = 0.005;
@@ -43,14 +51,6 @@ class SwerveModule {
 		double anglekI = 0.0016;
 		double anglekD = 160;
 		double anglekF = 0;
-
-		Gyro* gyro = Gyro::GetInstance();
-
-		WPI_TalonFX m_driveMotor;
-		WPI_TalonFX m_angleMotor;
-		CANCoder m_angleEncoder;
-
-		int CANID;
 
 		frc::Rotation2d angle = units::degree_t{0};
 };

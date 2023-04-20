@@ -23,7 +23,7 @@ class Drivetrain {
 		 * @param strafe Sideways movement of the robot in meters/sec.
 		 * @param rotate Rotational movement of the robot in degrees/sec
 		 * @param fieldRelative Is the robot being driven field oriented?
-		 * @param speedySpin Is the robot spinning quick?
+		 * @param centerOfRotation Robot center of rotation.
 		*/
 		void Drive(units::meters_per_second_t forward, units::meters_per_second_t strafe, units::degrees_per_second_t rotate, bool fieldRelative, frc::Translation2d centerOfRotation);
 		/**
@@ -32,8 +32,6 @@ class Drivetrain {
 		 * @return returns a pose2d of the robot's position on the field.
 		*/
 		void UpdateOdometry();
-		
-		static constexpr units::meters_per_second_t kMaxSpeed = 1.0_mps;  // 3 meters per second
 		
 
 	private:
@@ -47,16 +45,16 @@ class Drivetrain {
 		// It's wrong but (++,-+,--,+-) it works, no touchy.
 		
 		SwerveModule m_rearLeft{0, 1, 2, 110};
-		frc::Translation2d m_rearLeftLocation{+0.3048_m, +0.3048_m};
+		frc::Translation2d m_rearLeftLocation{+(kRobotLength/2), +(kRobotWidth/2)};
 		
 		SwerveModule m_frontLeft{3, 4, 5, 148};
-		frc::Translation2d m_frontLeftLocation{-0.3048_m, +0.3048_m};
+		frc::Translation2d m_frontLeftLocation{-(kRobotLength/2), +(kRobotWidth/2)};
 		
 		SwerveModule m_frontRight{6, 7, 8, 250};
-		frc::Translation2d m_frontRightLocation{-0.3048_m, -0.3048_m};
+		frc::Translation2d m_frontRightLocation{-(kRobotLength/2), -(kRobotWidth/2)};
 
 		SwerveModule m_rearRight{9, 10, 11, 105};
-		frc::Translation2d m_rearRightLocation{+0.3048_m, -0.3048_m};
+		frc::Translation2d m_rearRightLocation{+(kRobotLength/2), -(kRobotWidth/2)};
 
 		frc::SwerveDriveKinematics<4> m_kinematics{m_rearLeftLocation, m_frontLeftLocation, m_frontRightLocation, m_rearRightLocation};
 

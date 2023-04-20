@@ -49,7 +49,7 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 	m_angleEncoder.SetPositionToAbsolute();
 }
 
-frc::SwerveModulePosition SwerveModule::GetPosition() {return {units::meter_t{(m_driveMotor.GetSelectedSensorPosition())*(/*  2048 * meters/sensor unit  */5)}, gyro->GetRotation2d()};}
+frc::SwerveModulePosition SwerveModule::GetPosition() {return {units::meter_t{(m_driveMotor.GetSelectedSensorPosition())*(((4*M_PI)/kDriveGearRatio)/2048)}, gyro->GetRotation2d()};}
 
 frc::Rotation2d SwerveModule::getAngle() {return frc::Rotation2d{units::degree_t{-m_angleEncoder.GetPosition()}}; }
 
