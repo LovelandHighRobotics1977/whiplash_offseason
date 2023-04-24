@@ -26,13 +26,14 @@ void Arm::Intake(int in, int out){
 	m_armIntake.Set(in - out);
 }
 
-void Arm::AutoPosition(int angle, bool retracting, bool enabled){
+void Arm::AutoPosition(int angle, bool raising, bool enabled){
 	if(!enabled){
 		positionSpeed = .3;
 	}else{
-		double dist = abs(m_armEncoder.GetDistance());
-
-		if(!retracting){
+		if(m_angleSwitch.Get()){m_armEncoder.Reset();}
+		double dist = abs(m_armEncoder.GetRaw()/8);
+		
+		if(!raising){
 			if(dist < angle-2){
 				m_armAngle.Set(positionSpeed);
 			}else if(dist > (angle+2)){
@@ -42,11 +43,7 @@ void Arm::AutoPosition(int angle, bool retracting, bool enabled){
 				m_armAngle.Set(0);
 			}
 		}else{
-			int a = m_angleSwitch.Get();
-			int b = m_extensionSwitch.Get();
-			std::cout<<b<<std::endl;
-			m_armExtend.Set(1 - b);
-			m_armAngle.Set(b ? (a ? 0 : -0.3) : 0);
+			m_armAngle.Set(m_extensionSwitch.Get() ? (m_angleSwitch.Get() ? 0 : -0.3) : 0);
 		}
 	}
 }

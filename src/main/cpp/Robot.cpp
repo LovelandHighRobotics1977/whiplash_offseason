@@ -9,7 +9,7 @@ void Robot::RobotInit() {
 	frc::SmartDashboard::PutNumber("vD:",0);
 	frc::SmartDashboard::PutNumber("vX:",0);
 	frc::SmartDashboard::PutNumber("vY:",0);
-	frc::SmartDashboard::PutNumber("Max Speed",0.35);
+	frc::SmartDashboard::PutNumber("Max Speed",1);
 }
 void Robot::RobotPeriodic() {}
 
@@ -25,46 +25,58 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
-	if(m_Joystick.GetRawButton(3)){gyro->Reset();}
-
+	// Get max speed from SmartDashboard
 	double maxSpeed = frc::SmartDashboard::GetNumber("Max Speed", 1);
 
+	// Get joystick inputs and calculate throttle
 	double j_forward = m_Joystick.GetY();
 	double j_strafe = -m_Joystick.GetX();
 	double j_rotate = m_Joystick.GetTwist();
 	double throttle = ((1 - ((m_Joystick.GetThrottle() + 1) / 2)) * maxSpeed);
+
+	// Determine if field-oriented control is enabled
 	bool fieldOriented = !m_Joystick.GetRawButton(2);
 
+	// Calculate swerve module inputs
 	const auto forward = (-m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.13)) * throttle) * kMaxSpeed;
 	const auto strafe = (-m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.13)) * throttle) * kMaxSpeed;
 	const auto rotate = (-m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.3)) * sqrt(throttle));
-	
-	//Alternate centers of rotation
-	int rotateAtPosition[5]{m_Joystick.GetRawButton(1),m_Joystick.GetRawButton(9),m_Joystick.GetRawButton(10),m_Joystick.GetRawButton(11),m_Joystick.GetRawButton(12)};
-	auto [t, fl, fr, rl, rr] = rotateAtPosition;
-	/*Tower (center of mass)*/if(t > (fl + fr + rl + rr)){centerOfRotation = kCenterOfMass;	rotation = rotate * kFastRotation;}
-	/*Front Left Module     */if(fl > (t + fr + rl + rr)){centerOfRotation = {-(kRobotLength/2), +(kRobotWidth/2)}; rotation = rotate * kSlowRotation;}
-	/*Front Right Module    */if(fr > (fl + t + rl + rr)){centerOfRotation = {-(kRobotLength/2), -(kRobotWidth/2)}; rotation = rotate * kSlowRotation;}
-	/*Rear Left Module      */if(rl > (fl + fr + t + rr)){centerOfRotation = {+(kRobotLength/2), +(kRobotWidth/2)}; rotation = rotate * kSlowRotation;}
-	/*Rear right Module     */if(rr > (fl + fr + rl + t)){centerOfRotation = {+(kRobotLength/2), -(kRobotWidth/2)}; rotation = rotate * kSlowRotation;}
-	/*Robot Center          */if(1 > (fl + fr + rl + rr + t)){centerOfRotation = {0_m, 0_m}; rotation = rotate * kMediumRotation;}
-	
+
+	// Determine center of rotation based on button input
+	int rotateAtPosition[1] {m_Joystick.GetRawButton(1)};
+	auto [t] = rotateAtPosition;
+	if (t > 0) {
+		// Tower (center of mass)
+		centerOfRotation = kCenterOfMass;
+		rotation = rotate * kFastRotation;
+	} else {
+		// Robot center
+		centerOfRotation = {0_m, 0_m};
+		rotation = rotate * kMediumRotation;
+	}
+
+	// Get input from joystick and controller
 	int c_armIn = m_Controller.GetRightBumper();
 	int c_armOut = m_Controller.GetLeftBumper();
 	float c_armUp = m_Controller.GetRightTriggerAxis();
 	float c_armDown = m_Controller.GetLeftTriggerAxis();
 	int c_intakeIn = m_Controller.GetAButton();
 	int c_intakeOut = m_Controller.GetBButton();
+	int c_armAutoEnabled = m_Controller.GetRightStickButton();
 
+	// Put values to SmartDashboard
 	frc::SmartDashboard::PutNumber("throttle", throttle);
-	frc::SmartDashboard::PutNumber("Angle", int(gyro->GetYaw()));
-	
-	m_arm.Extension(c_armIn,c_armOut);
-	m_arm.Angle(c_armUp,c_armDown);
-	m_arm.Intake(c_intakeIn,c_intakeOut);
-	m_arm.AutoPosition(220, m_Controller.GetLeftStickButton(),m_Controller.GetRightStickButton());
-	
-	m_swerve.Drive(forward,strafe,rotation,fieldOriented,centerOfRotation);
+	frc::SmartDashboard::PutNumber("Angle", static_cast<int>(gyro->GetYaw()));
+
+	// Control the arm and intake
+	m_arm.Extension(c_armIn, c_armOut);
+	m_arm.Angle(c_armUp, c_armDown);
+	m_arm.Intake(c_intakeIn, c_intakeOut);
+	m_arm.AutoPosition(105, c_armIn, c_armAutoEnabled);
+
+	// Drive the swerve modules
+	m_swerve.Drive(forward, strafe, rotation, fieldOriented, centerOfRotation);
+
 }
 
 void Robot::DisabledInit() {}

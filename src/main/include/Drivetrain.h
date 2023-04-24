@@ -31,7 +31,9 @@ class Drivetrain {
 		 * @param robotAngle the angle of the robot as a rotation2D
 		 * @return returns a pose2d of the robot's position on the field.
 		*/
-		void UpdateOdometry();
+		frc::Pose2d UpdateOdometry();
+
+		void ResetOdometry();
 		
 
 	private:

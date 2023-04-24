@@ -21,9 +21,18 @@ void Drivetrain::Drive(units::meters_per_second_t forward, units::meters_per_sec
 	
 }
 
-void Drivetrain::UpdateOdometry() {m_odometry.Update(gyro->GetRotation2d(), 
-													{
-														m_rearLeft.GetPosition(), m_frontLeft.GetPosition(), 
-														m_frontRight.GetPosition(), m_rearRight.GetPosition()
-													});
+frc::Pose2d Drivetrain::UpdateOdometry() {return m_odometry.Update(gyro->GetRotation2d(), 
+																{
+																	m_rearLeft.GetPosition(), m_frontLeft.GetPosition(), 
+																	m_frontRight.GetPosition(), m_rearRight.GetPosition()
+																});
+}
+
+void Drivetrain::ResetOdometry() {
+	m_odometry.ResetPosition(gyro->GetRotation2d(), 
+							{
+								m_rearLeft.GetPosition(), m_frontLeft.GetPosition(), 
+								m_frontRight.GetPosition(), m_rearRight.GetPosition()
+							},
+							frc::Pose2d{0_m,0_m,0_deg});
 }
