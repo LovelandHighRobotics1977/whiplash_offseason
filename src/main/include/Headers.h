@@ -41,7 +41,7 @@
 #include <frc/smartdashboard/SmartDashboard.h>
 
 //misc
-#include <cameraserver/CameraServer.h>
+//#include <cameraserver/CameraServer.h>
 
 //user defined
 #include "Gyro.h"

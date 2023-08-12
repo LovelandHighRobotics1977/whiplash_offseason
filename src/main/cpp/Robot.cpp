@@ -5,7 +5,6 @@
 #include "Robot.h"
 
 void Robot::RobotInit() {
-	frc::CameraServer::StartAutomaticCapture();
 	frc::SmartDashboard::PutNumber("vD:",0);
 	frc::SmartDashboard::PutNumber("vX:",0);
 	frc::SmartDashboard::PutNumber("vY:",0);
@@ -25,6 +24,11 @@ void Robot::AutonomousPeriodic() {
 
 void Robot::TeleopInit() {}
 void Robot::TeleopPeriodic() {
+	// Reset Gyro
+	if(m_Joystick.GetRawButton(3)){
+		gyro->Reset();
+	}
+
 	// Get max speed from SmartDashboard
 	double maxSpeed = frc::SmartDashboard::GetNumber("Max Speed", 1);
 
@@ -62,20 +66,27 @@ void Robot::TeleopPeriodic() {
 	float c_armDown = m_Controller.GetLeftTriggerAxis();
 	int c_intakeIn = m_Controller.GetAButton();
 	int c_intakeOut = m_Controller.GetBButton();
-	int c_armAutoEnabled = m_Controller.GetRightStickButton();
+	int c_armAutoUP = m_Controller.GetLeftStickButton();
+	int c_armAutoDOWN = m_Controller.GetRightStickButton();
 
 	// Put values to SmartDashboard
 	frc::SmartDashboard::PutNumber("throttle", throttle);
 	frc::SmartDashboard::PutNumber("Angle", static_cast<int>(gyro->GetYaw()));
 
 	// Control the arm and intake
-	m_arm.Extension(c_armIn, c_armOut);
+	m_arm.Extension((c_armIn + c_armAutoDOWN), c_armOut);
 	m_arm.Angle(c_armUp, c_armDown);
 	m_arm.Intake(c_intakeIn, c_intakeOut);
-	m_arm.AutoPosition(105, c_armIn, c_armAutoEnabled);
+
+	m_Controller.SetRumble(frc::GenericHID::kBothRumble, m_arm.AutoPosition(105, c_armAutoUP, c_armAutoDOWN));
 
 	// Drive the swerve modules
-	m_swerve.Drive(forward, strafe, rotation, fieldOriented, centerOfRotation);
+	if(m_Joystick.GetRawButton(4)){
+		m_swerve.Drive(0_mps, 0_mps, 0_deg_per_s, fieldOriented, centerOfRotation);
+	}else{
+		m_swerve.Drive(forward, strafe, rotation, fieldOriented, centerOfRotation);
+	}
+	
 
 }
 

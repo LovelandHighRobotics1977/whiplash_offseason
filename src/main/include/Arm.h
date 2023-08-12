@@ -44,7 +44,7 @@ class Arm {
          * @param extending Is the am extending or retracting?
          * @param enabled Enable arm automovement?
         */
-        void AutoPosition(int angle, bool raising, bool enabled);
+        int AutoPosition(int angle, bool raising, bool lowering);
     private:
         rev::CANSparkMax m_armExtend{20, rev::CANSparkMax::MotorType::kBrushless};
 		WPI_TalonFX m_armAngle{13};

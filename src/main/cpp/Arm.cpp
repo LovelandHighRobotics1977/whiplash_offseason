@@ -26,24 +26,28 @@ void Arm::Intake(int in, int out){
 	m_armIntake.Set(in - out);
 }
 
-void Arm::AutoPosition(int angle, bool raising, bool enabled){
-	if(!enabled){
-		positionSpeed = .3;
-	}else{
-		if(m_angleSwitch.Get()){m_armEncoder.Reset();}
-		double dist = abs(m_armEncoder.GetRaw()/8);
-		
-		if(!raising){
-			if(dist < angle-2){
-				m_armAngle.Set(positionSpeed);
-			}else if(dist > (angle+2)){
-				m_armAngle.Set(-positionSpeed);
-			}else if((dist > (angle-2)) && (dist < (angle+2))){
-				positionSpeed = .05;
-				m_armAngle.Set(0);
-			}
-		}else{
-			m_armAngle.Set(m_extensionSwitch.Get() ? (m_angleSwitch.Get() ? 0 : -0.3) : 0);
+int Arm::AutoPosition(int angle, bool raising, bool lowering){
+	if(m_angleSwitch.Get()){m_armEncoder.Reset();}
+	double dist = abs(m_armEncoder.GetRaw()/8);
+	
+	if(raising){
+		if(dist < angle-2){
+			m_armAngle.Set(positionSpeed);
+			return 0;
+		}else if(dist > (angle+2)){
+			m_armAngle.Set(-positionSpeed);
+			return 0;
+		}else if((dist > (angle-2)) && (dist < (angle+2))){
+			positionSpeed = .05;
+			m_armAngle.Set(0);
+			return 1;
 		}
+	}else if(lowering){
+		m_armAngle.Set(m_extensionSwitch.Get() ? (m_angleSwitch.Get() ? 0 : -0.3) : 0);
+		return m_angleSwitch.Get();
+	}else{
+		positionSpeed = .3;
+		return 0;
 	}
+	return 0;
 }
