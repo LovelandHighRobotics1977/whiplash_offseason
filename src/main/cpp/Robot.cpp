@@ -22,10 +22,12 @@ void Robot::AutonomousPeriodic() {
 	m_swerve.Drive(-vx,-vy,angle,1,{0_m,0_m});
 }
 
-void Robot::TeleopInit() {}
+void Robot::TeleopInit() {
+	gyro->Reset();
+}
 void Robot::TeleopPeriodic() {
 	// Reset Gyro
-	if(m_Joystick.GetRawButton(3)){
+	if(m_Joystick.GetRawButton(3) && m_Joystick.GetRawButton(7)  && m_Joystick.GetRawButton(8)  && m_Joystick.GetRawButton(12)){
 		gyro->Reset();
 	}
 
@@ -42,8 +44,8 @@ void Robot::TeleopPeriodic() {
 	bool fieldOriented = !m_Joystick.GetRawButton(2);
 
 	// Calculate swerve module inputs
-	const auto forward = (-m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.13)) * throttle) * kMaxSpeed;
-	const auto strafe = (-m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.13)) * throttle) * kMaxSpeed;
+	const auto forward = (-m_forwardLimiter.Calculate(frc::ApplyDeadband(j_forward, 0.2)) * throttle) * kMaxSpeed;
+	const auto strafe = (-m_strafeLimiter.Calculate(frc::ApplyDeadband(j_strafe, 0.2)) * throttle) * kMaxSpeed;
 	const auto rotate = (-m_rotateLimiter.Calculate(frc::ApplyDeadband(j_rotate, 0.3)) * sqrt(throttle));
 
 	// Determine center of rotation based on button input

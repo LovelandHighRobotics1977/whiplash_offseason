@@ -51,7 +51,11 @@ SwerveModule::SwerveModule(const int driveMotorID,     const int angleMotorID,  
 
 frc::SwerveModulePosition SwerveModule::GetPosition() {return {units::meter_t{(m_driveMotor.GetSelectedSensorPosition())*(((4*M_PI)/kDriveGearRatio)/2048)}, gyro->GetRotation2d()};}
 
-frc::Rotation2d SwerveModule::getAngle() {return frc::Rotation2d{units::degree_t{-m_angleEncoder.GetPosition()}}; }
+frc::Rotation2d SwerveModule::getAngle() {
+	if(CANID==2){std::cout<<((m_angleEncoder.GetPosition()+360))<<std::endl;}
+	
+	return frc::Rotation2d{units::degree_t{-m_angleEncoder.GetPosition()}};
+}
 
 void SwerveModule::SetDesiredState(
 	const frc::SwerveModuleState& desiredState) {
@@ -59,7 +63,7 @@ void SwerveModule::SetDesiredState(
 
 		auto const [optimized_speed, optimized_angle] = frc::SwerveModuleState::Optimize(desiredState, getAngle());
 		//auto const [optimized_speed_test, optimized_angle_test] = frc::SwerveModuleState::Optimize(desiredState, frc::Rotation2d{units::degree_t{angle}});
-		//auto un_optimized_speed = desiredState.speed;auto un_optimized_angle = desiredState.angle;
+		auto un_optimized_speed = desiredState.speed;auto un_optimized_angle = desiredState.angle;
 
 		switch (CANID){
 		case 2:
@@ -81,7 +85,7 @@ void SwerveModule::SetDesiredState(
 		}
 
 		// Set the motor outputs.
-		m_driveMotor.Set((double) optimized_speed);
-		m_angleMotor.Set(TalonFXControlMode::Position, optimized_angle.Degrees().value()*(4096.0 / 360.0));
+		m_driveMotor.Set((double) un_optimized_speed);
+		m_angleMotor.Set(TalonFXControlMode::Position, un_optimized_angle.Degrees().value()*(4096.0 / 360.0));
 		angle = optimized_angle;
 }
